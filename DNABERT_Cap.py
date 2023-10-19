@@ -294,7 +294,8 @@ def CapsNet(input_shape, n_class, num_routing):
 
     # Layer 1: Just a conventional Conv1D layer
     conv1 = layers.Conv1D(filters=64, kernel_size=2, strides=1, padding='valid', activation='relu', name='conv1')(x)
-    lstm = LSTM(64, dropout=dropout_p, recurrent_dropout=dropout_p,return_sequences=True)(conv1)
+    lstm = Bidirectional(LSTM(64, dropout=dropout_p, recurrent_dropout=dropout_p,return_sequences=True))(conv1)
+
     # Layer 2: Conv1D layer with `squash` activation, then reshape to [None, num_capsule, dim_vector]
     primarycaps = PrimaryCap(lstm, dim_vector=8, n_channels=8, kernel_size=2, strides=2, padding='valid')
 
@@ -311,7 +312,7 @@ def CapsNet(input_shape, n_class, num_routing):
     return models.Model([x], [out_caps])
 
 from keras.layers import Activation, Add, Bidirectional, Conv1D, Dense, Dropout, Embedding, Flatten
-from keras.layers import concatenate, GRU, Input, LSTM, MaxPooling1D
+from keras.layers import concatenate, Input, LSTM, MaxPooling1D
 from keras.layers import GlobalAveragePooling1D,  GlobalMaxPooling1D, SpatialDropout1D
 from keras.models import Model
 
